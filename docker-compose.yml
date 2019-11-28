@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+
+  webserver:
+    build: ./app
+    volumes:
+      - webapps:/usr/local/tomcat/webapps
+      - logs:/usr/local/tomcat/logs
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    restart: always
+  
+  db:
+    build: ./db
+    environment:
+      POSTGRES_USER": postgres
+      POSTGRES_PASSWORD: 123321
+      POSTGRES_DB: testdb
+    restart: always
+    ports:
+      - "5432:5432"
+
+volumes:
+  webapps:
+  logs:
